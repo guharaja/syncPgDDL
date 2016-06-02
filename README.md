@@ -55,4 +55,4 @@ Though the **setUpPgAgent.sql** is tested and working, it assumes a fresh PgAgen
 >   	g) test
 >   		create a test table in target database
 >   			CREATE TABLE test_table ( id SERIAL, colA INTEGER );
->   	Successful completion of the CREATE statement indicates that the dump will start in 20 secs.  Ensure that file <dbname>.schema.sql appears in the dump dir(sqls) in a few minutes.  Time taken will depend on the size of the target database.
+Successful completion of the CREATE statement indicates that the dump will start in 20 secs.  Ensure that file <dbname>.schema.sql appears in the dump dir(sqls) in a few minutes.  Time taken will depend on the size of the target database.
