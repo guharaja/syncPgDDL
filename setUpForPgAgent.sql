@@ -1,64 +1,20 @@
-
-/*******************************************************************************
-This script automates extraction of a postgres db schema on any changes to it.
-The dump dir(sqls below) should be set below to a git enabled area for automated 
-version control of the schema-dump text file.  
-
-1) install PgAgent from Postgres Stack Builder
-	when asked for a Windows User Account(henceforth <WinUser>), provide 
-		username and password of the owner of the git dir where the dump file 
-		will reside
-2) add a line to C:\Users\<WinUser>\AppData\Roaming\postgresql\pgpass.conf
-	to allow entry to database for this program; this line is of the format 
-	<hostname>:<port>:<database>:<username>:<password>
-	e.g. localhost:5432:sabyasachi:postgres:password
-3) make changes to this file; 
-	settings in the section immediately below
-		dbname - name of the database, - 'sabyasachi'
-		user - the database username - 'password'
-		sqls - the dir under git where the dump file will reside
-			- 'C:\\Users\\<WinUser>\\Documents\\sqls'
-		errs - the errors file dir 
-			- NO LONGER USED
-		prog - the full path and name of the pg_dump.exe in PostgreSQL bin dir 
-			- 'C:\\Program Files\\PostgreSQL\.9.5\\bin\\pg_dump.exe'
-	ALSO SET PASSWORD IN FUNCTION sched_pg_dump_run(), ON OR NEAR LINE 140 BELOW
-		(There should be a better way, but fact and theory appear to disagree.)
-4) run this file in the target database
-	a) in PgAdmin click on the target database to select it
-	b) open PSQL Console from the Plugins menu - should show db name in prompt
-	c) type \cd <directory where this file exists>
-	d) type \i <this filename - setUpForPgAgent.sql>
-	e) NOTE: THIS SCRIPT WILL TRUNCATE TABLES IN pgagent SCHEMA.  IF PgAgent
-		ON YOUR MACHINE IS NOT A NEW INSTALL, EXISTING DATA WILL BE LOST.
-	f) see should see the following near the end:
-		. . .
-		CREATE EXTENSION
-		CREATE FUNCTION
-		CREATE EVENT TRIGGER
-		. . .
-	g) test
-		create a test table in target database
-			CREATE TABLE test_table ( id SERIAL, colA INTEGER );
-		Completion of this DDL statement indicates that the dump will start 
-		in 20 secs.  Ensure that a file <dbname>.schema.sql appears in the 
-		dump dir in a few minutes.  The time taken will depend on the size of 
-		the database.	
-
-*******************************************************************************/
+/*****************************************************************************
+	see README.md for complete setup instructions. read README first!
+	Else, modify the following variables, run file in psql in the target db
+*****************************************************************************/
 \set dbname 'test_db'	
 \set user 'postgres'
 \set sqls 'C:\\Users\\postgres\\Documents\\sqls'
-\set errs 'C:\\Users\\postgres\\Documents\\sqls'
 \set prog 'C:\\tools\\PostgreSQL.9.5\\bin\\pg_dump.exe'
-/*******************************************************************************/
+/*****************************************************************************/
 
 \! chcp 1252
 \set ON_ERROR_STOP
 
 --\set pass '''set PGPASSWORD=':password'\n'
+-- \set errs 'C:\\Users\\postgres\\Documents\\sqls'
 \set conn ' --host=localhost --port=5432 --username=':user' --no-password '
-\set othrs ' --format=plain --schema-only --create --clean '
+\set othrs ' --format=plain --schema-only --serializable-deferrable '
 \set file '--file="':sqls'\\':dbname'.schema.sql"'
 \set dump '"':prog'" --dbname=':dbname :conn :othrs :file
 --\set cmd '':pass:dump''
@@ -71,7 +27,6 @@ version control of the schema-dump text file.
 
 \set origdb :DBNAME
 --------------------------------------------------------
-
 \echo
 \connect postgres
 SET client_min_messages TO WARNING;

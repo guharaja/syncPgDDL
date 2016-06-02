@@ -1,4 +1,4 @@
 *.bak
 *.err
 olds/
-sqlOut.txt
+tmp/
