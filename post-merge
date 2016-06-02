@@ -2,12 +2,11 @@
 # from MIT © Sindre Sorhus - sindresorhus.com 
 # see <https://gist.github.com/sindresorhus/7996717>
 
-SCHEMA_FILE="./sqls/sabyasachi.schema.sql"
-
 changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)";
 check_run() { echo "$changed_files" | grep --quiet "$1" && eval "$2"  };
 
 # diff_smry="git diff --summary HEAD^ HEAD <SCHEMA_FILE>";
 # diff_lines="git diff -a -b -w --exit-code HEAD^ HEAD <SCHEMA_FILE>";
 
+SCHEMA_FILE="./sqls/sabyasachi.schema.sql"
 check_run "$SCHEMA_FILE" "./restoreSchema.sh";
