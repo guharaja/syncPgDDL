@@ -1,6 +1,8 @@
 # syncPGSchema
 *maintain Postgresql schema in git*
 
+Yet another version with fundamental changes is in the works and will reach here shortly.  This will be a Pg extension and will syncronize per DDL. Applying the entire schema everytime is overkill and unsafe.  So wait a bit . . .
+
 This project has no automated setup yet.  It has to be setup by hand as 
 described below.
 
